@@ -10,6 +10,7 @@
   --secondary-color: #f4f7fd;
   --primary-font-color: #000000;
   --secondary-font-color: #828fa3;
+  --primary-btn-color: #635fc7;
   --primary-box-shadow: 0px 4px 6px rgba(54, 78, 126, 0.1015); /* Subtle shadow for card depth */
   --sidebar-width: 300px; /* Sidebar fixed width */
 }
@@ -71,7 +72,7 @@ h4 {
   display: flex;
   align-items: center;
   gap: 10px; /* Space between icon and text */
-  background-color: #635fc7;
+  background-color: var(--primary-btn-color);
   color: #fff;
   border: none;
   border-radius: 0 100px 100px 0; /* Pill shape only on right side */
@@ -82,6 +83,41 @@ h4 {
   font-weight: bold;
   cursor: pointer;
   overflow: hidden; /* Prevents overflowed text/icons from showing */
+}
+
+/* ===============
+   Main Layout
+================ */
+#layout {
+  flex: 1; /* Fills remaining space beside sidebar */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  width: 100%;
+}
+
+/* ===============
+   Header Section
+================ */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--primary-color);
+  color: var(--primary-font-color);
+  height: 96px;
+  padding: 0 35px 0 30px;
+  border-bottom: 1px solid #e4ebfa;
+  width: 100%;
+  font-size: 1.875rem;
+  font-weight: 600;
+}
+
+.header-name-div {
+  display: flex;
+  align-items: center;
+}
+
+.logo-mobile {
+  display: none; /* Hidden on desktop; shown on smaller screens */
 }
 
 /* ===============
@@ -163,49 +199,6 @@ input:checked + .slider::before {
   flex: 1; /* Fills remaining space beside sidebar */
   overflow-x: hidden; /* Prevent horizontal scroll */
   width: 100%;
-}
-
-/* ===============
-   Header Section
-================ */
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: var(--primary-color);
-  color: var(--primary-font-color);
-  height: 96px;
-  padding: 0 35px 0 30px;
-  border-bottom: 1px solid #e4ebfa;
-  width: 100%;
-  font-size: 1.875rem;
-  font-weight: 600;
-}
-
-.header-name-div {
-  display: flex;
-  align-items: center;
-}
-
-.logo-mobile {
-  display: none; /* Hidden on desktop; shown on smaller screens */
-}
-
-.add-task-btn {
-    background-color: #635fc7;
-    color: #fff;
-    border: none;
-    border-radius: 24px;
-    padding: 10px 20px;
-    font-size: 0.9375rem;
-    font-weight: bold;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.3s ease;
-}
-
-.add-task-btn:hover {
-    background-color: #4b48b6;
 }
 
 /* ===============
@@ -336,28 +329,11 @@ dialog {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 .modal-header h3 {
   margin: 0;
   font-size: 1.125rem;
-}
-
-.submit-task-btn {
-  margin-top: 20px;
-  background-color: #635fc7;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 20px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 0.875rem;
-}
-
-.submit-task-btn:hover {
-    background-color: #4b48b6;
 }
 
 .close-btn {
@@ -384,7 +360,7 @@ dialog {
 form label {
   display: block;
   font-weight: 600;
-  font-size: 0.75em;
+  font-size: 0.75rem;
   margin-top: 12px;
   margin-bottom: 4px;
   color: #828fa3;
@@ -409,6 +385,69 @@ form select {
 
   background-size: 1.4rem;
   padding-right: 1rem;
+}
+
+#add-new-task-btn {
+  background-color: var(--primary-btn-color);
+  color: white;
+  border-radius: 30px;
+  border: 0;
+  font-size: 16px;
+  padding: 18px;
+  padding-left: 35px;
+  padding-right: 35px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+/* New Task Modal Window */
+
+.modal-window {
+  /* border: 5px solid red; */
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 20px;
+  background-color: var(--primary-color);
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 10px;
+
+  z-index: 3;
+  transition: all 0.3s ease-in;
+}
+
+.submit-btn {
+  background-color: var(--primary-btn-color);
+  color: white;
+  border-radius: 30px;
+  border: 0;
+  font-size: 16px;
+  padding: 14px;
+  padding-left: 35px;
+  padding-right: 35px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-grow: 1; /* Allows the button to grow and fill the space */
+  margin: 5px 0; /* Optional: adds a margin between buttons */
+}
+
+textarea {
+  font-size: 16px;
+  color: black;
+  height: 90px;
+  padding: 10px;
+  border-radius: 4px;
+  resize: vertical;
 }
 
 /* ========================
@@ -468,7 +507,6 @@ form select {
 
   #header-board-name {
     font-size: 1rem;
-    display: none;
   }
 
   .task-div {
@@ -505,20 +543,19 @@ form select {
   .column-div {
     padding: 24px;
   }
-}
 
-body.dark-theme {
-  --primary-color: #20212c;
-  --secondary-color: #2b2c37;
-  --primary-font-color: #ffffff;
-  --secondary-font-color: #828fa3;
-}
+  #add-new-task-btn {
+    font-size: 0;
+    padding: 12px;
+  }
 
-body.dark-theme .task-div {
-  background-color: #2b2c37;
-  color: #fff;
-}
-
-body.dark-theme .theme-toggle {
-   background-color: #20212c;
+  #add-new-task-btn::before {
+    content: "+";
+    font-size: 18px;
+    font-weight: 800;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
