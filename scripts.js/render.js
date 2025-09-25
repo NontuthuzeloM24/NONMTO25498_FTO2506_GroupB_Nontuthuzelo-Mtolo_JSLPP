@@ -1,4 +1,4 @@
-import { taskTitleInput, taskDescInput, taskStatusSelect, taskForm, deleteTaskBtn } from './dom.js';
+import { taskTitleInput, taskDescInput, taskStatusSelect, taskForm, deleteTaskBtn, taskPrioritySelect } from './dom.js';
 import { openModal } from './modal.js';
 
 export function renderTask(task) {
@@ -15,6 +15,7 @@ taskCard.addEventListener('click', () => {
     taskTitleInput.value = task.title;
     taskDescInput.value = task.description;
     taskStatusSelect.value = task.status;
+    taskPrioritySelect.value = task.priority || 'low'; // Default to 'low' if undefined
     taskForm.dataset.editing = task.id;
     deleteTaskBtn.style.display = 'block';
     openModal();
