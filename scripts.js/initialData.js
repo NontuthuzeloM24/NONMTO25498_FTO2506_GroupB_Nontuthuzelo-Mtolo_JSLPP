@@ -4,6 +4,7 @@ export const initialTasks = [
     title: "Launch Epic Career 🚀",
     description: "Create a killer Resume",
     status: "todo",
+    priority: 'medium',
     board: "Launch Career",
   },
   {
@@ -11,6 +12,7 @@ export const initialTasks = [
     title: "Master JavaScript 💛",
     description: "Get comfortable with the fundamentals",
     status: "doing",
+    priority: 'high',
     board: "Launch Career",
   },
   {
@@ -18,6 +20,7 @@ export const initialTasks = [
     title: "Keep on Going 🏆",
     description: "You're almost there",
     status: "doing",
+    priority: 'medium',
     board: "Launch Career",
   },
 
@@ -27,6 +30,7 @@ export const initialTasks = [
     description:
       "Study fundamental data structures and algorithms to solve coding problems efficiently",
     status: "todo",
+    priority: 'low',
     board: "Launch Career",
   },
   {
@@ -35,6 +39,7 @@ export const initialTasks = [
     description:
       "Gain practical experience and collaborate with others in the software development community",
     status: "done",
+    priority: 'medium',
     board: "Launch Career",
   },
   {
@@ -43,6 +48,7 @@ export const initialTasks = [
     description:
       "Create a portfolio showcasing your skills and projects to potential employers",
     status: "done",
+    priority: 'high',
     board: "Launch Career",
   },
 ];
