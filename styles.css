@@ -450,6 +450,18 @@ textarea {
   resize: vertical;
 }
 
+/* Priority Selector */
+#task-priority,
+#select-priority {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
 /* ========================
    Responsive Styles
 ======================== */
