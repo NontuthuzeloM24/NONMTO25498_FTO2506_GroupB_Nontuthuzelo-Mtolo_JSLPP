@@ -13,7 +13,7 @@ import {
 } from './dom.js';
 
 import { openModal, closeModal } from './modal.js';
-import { toggleTheme } from './theme.js';
+import { loadTheme, toggleTheme } from './theme.js';
 import { toggleSidebar } from './sidebar.js';
 import { loadTasks, saveTasks } from './storage.js';
 import { renderAllTasks } from './render.js';
@@ -65,5 +65,22 @@ export function setupEventListeners() {
         saveTasks(tasks);
         renderAllTasks(tasks);
         closeModal();
+        loadTheme();
     });
+
+    // Add delete event listener outside the submit handler
+    if (typeof deleteTaskBtn !== 'undefined' && deleteTaskBtn) {
+        deleteTaskBtn.addEventListener('click', () => {
+            if (!taskForm.dataset.editing) return;
+
+            const id = Number(taskForm.dataset.editing);
+            let tasks = loadTasks();
+            tasks = tasks.filter((t) => t.id !== id);
+
+            saveTasks(tasks);
+            renderAllTasks(tasks);
+            closeModal();
+            loadTheme();
+        });
+    }
 }
