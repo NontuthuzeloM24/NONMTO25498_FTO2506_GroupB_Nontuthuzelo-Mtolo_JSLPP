@@ -5,6 +5,8 @@ import {
   taskTitleInput,
   taskDescInput,
   taskStatusSelect,
+  taskPrioritySelect,
+  newTaskPrioritySelect,
   themeSwitch,
   hideSidebarbtn,
   sidebar,
@@ -28,23 +30,40 @@ export function setupEventListeners() {
     const title = taskTitleInput.value.trim();
     const description = taskDescInput.value.trim();
     const status = taskStatusSelect.value;
+    const priority = taskPrioritySelect.value;
 
     if (!title || !status) {
       alert('! Please fill out this field.');
       return;
     }
 
-    const tasks = loadTasks();
-    const newTask = {
-      id: Date.now(),
-      title,
-      description,
-      status,
-    };
+    
+        const tasks = loadTasks();
 
-    tasks.push(newTask);
-    saveTasks(tasks);
-    renderAllTasks(tasks);
-    closeModal();
-  });
+        // Check if editing
+        if (taskForm.dataset.editing) {
+            const id = Number(taskForm.dataset.editing);
+            const index = tasks.findIndex(t => t.id === id);
+            if (index !== -1) {
+                tasks[index].title = title;
+                tasks[index].description = description;
+                tasks[index].status = status;
+                tasks[index].priority = priority;
+            }
+            delete taskForm.dataset.editing;
+        } else {
+            const newTask = {
+                id: Date.now(),
+                title,
+                description,
+                status,
+                priority,
+            };
+            tasks.push(newTask);
+        }
+
+        saveTasks(tasks);
+        renderAllTasks(tasks);
+        closeModal();
+    });
 }
