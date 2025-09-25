@@ -116,6 +116,13 @@
           <option value="doing">doing</option>
           <option value="done">done</option>
         </select>
+
+        <label for="task-priority">Priority</label>
+        <select id="task-priority" name="priority" required>
+          <option value="low">low</option>
+          <option value="medium" selected>medium</option>
+          <option value="high">high</option>
+        </select>
       </form>
     </dialog>
     <!-- New Task Modal: Form for adding a new task. -->
@@ -177,6 +184,13 @@
             value="Create Task"
           />
         </div>
+
+        <label class="label-modal-window" for="select-priority">Priority</label>
+        <select name="priority" id="select-priority" required>
+          <option value="low">low</option>
+          <option value="medium" selected>medium</option>
+          <option value="high">high</option>
+        </select>
       </form>
     </dialog>
   </body>
