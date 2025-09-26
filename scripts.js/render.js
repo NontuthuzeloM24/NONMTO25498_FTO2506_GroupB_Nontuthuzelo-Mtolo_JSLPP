@@ -11,24 +11,25 @@ const container = document.querySelector(`.column-div[data-status="${task.status
 if (container) container.appendChild(taskCard);
 
 // Click to edit
-taskCard.addEventListener('click', () => {
-    taskTitleInput.value = task.title;
-    taskDescInput.value = task.description;
-    taskStatusSelect.value = task.status;
-    taskPrioritySelect.value = task.priority || 'low'; // Default to 'low' if undefined
-    taskForm.dataset.editing = task.id;
-    deleteTaskBtn.style.display = 'block';
-    openModal();
-});
+const openEditModal = () => {
+        taskTitleInput.value = task.title;
+        taskDescInput.value = task.description;
+        taskStatusSelect.value = task.status;
+        taskPrioritySelect.value = task.priority || 'low';
+        taskForm.dataset.editing = task.id;
+        deleteTaskBtn.style.display = 'block';
+        openModal();
+    };
+    taskCard.addEventListener('click', openEditModal);
+    taskCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') openEditModal();
+    });
 }
 
 export function renderAllTasks(tasks) {
     document.querySelectorAll('.tasks-container').forEach((container) => {
         container.innerHTML = '';
     });
-
-    tasks.forEach(renderTask);
-    updateColumnCounts(tasks);
 }
 
 export function updateColumnCounts(tasks) {

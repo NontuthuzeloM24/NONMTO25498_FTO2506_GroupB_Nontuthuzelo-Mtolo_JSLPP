@@ -429,25 +429,15 @@ form select {
 .submit-btn {
   background-color: var(--primary-btn-color);
   color: white;
-  border-radius: 30px;
-  border: 0;
-  font-size: 16px;
-  padding: 14px;
-  padding-left: 35px;
-  padding-right: 35px;
-  font-weight: 600;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  width: 100%;
+  margin-top: 12px;
   cursor: pointer;
-  flex-grow: 1; /* Allows the button to grow and fill the space */
-  margin: 5px 0; /* Optional: adds a margin between buttons */
-}
-
-textarea {
-  font-size: 16px;
-  color: black;
-  height: 90px;
-  padding: 10px;
-  border-radius: 4px;
-  resize: vertical;
+  transition: background-color 0.3s ease;
 }
 
 .delete-btn {
@@ -466,6 +456,21 @@ textarea {
 
 .delete-btn:hover {
   background-color: #ff9898;
+}
+
+/* Button Layout */
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+textarea {
+  font-size: 16px;
+  color: black;
+  height: 90px;
+  padding: 10px;
+  border-radius: 4px;
+  resize: vertical;
 }
 
 /* Priority Selector */
@@ -588,4 +593,84 @@ textarea {
     padding-top: 0;
     padding-bottom: 0;
   }
+}
+
+@media (max-width: 600px) {
+  .button-group {
+    flex-direction: column;
+  }
+
+  #save-btn {
+    order: -1; /* Ensure Save is on top on mobile */
+  }
+}
+/* Dark mode*/
+body.dark-theme {
+  background-color: #181824;
+  color: #f5f5f5;
+}
+
+body.dark-theme .side-bar,
+body.dark-theme header,
+body.dark-theme .modal-window,
+body.dark-theme #task-modal,
+body.dark-theme .task-div,
+body.dark-theme .container,
+body.dark-theme .theme-toggle {
+  background-color: #232336 !important;
+  color: #f5f5f5 !important;
+}
+
+body.dark-theme .board-btn,
+body.dark-theme .submit-btn {
+  background-color: #39396a !important;
+  color: #fff !important;
+}
+
+body.dark-theme .delete-btn {
+  background-color: #ea5555 !important;
+  color: #fff !important;
+}
+
+body.dark-theme .task-div {
+  background-color: #232336 !important;
+  color: #f5f5f5 !important;
+  box-shadow: 0px 4px 6px rgba(30, 30, 60, 0.2);
+}
+
+body.dark-theme .column-div {
+  background-color: transparent !important;
+}
+
+body.dark-theme input,
+body.dark-theme textarea,
+body.dark-theme select {
+  background-color: #232336 !important;
+  color: #f5f5f5 !important;
+  border: 1px solid #39396a !important;
+}
+
+body.dark-theme .slider {
+  background-color: #39396a !important;
+}
+
+body.dark-theme .sidebar-footer {
+  background-color: #232336 !important;
+}
+
+body.dark-theme .modal-window {
+  background-color: #232336 !important;
+}
+
+body.dark-theme .card-column-main {
+  background-color: transparent !important;
+}
+
+body.dark-theme .columnHeader,
+body.dark-theme h4 {
+  color: #bfc7d5 !important;
+}
+
+body.dark-theme .dot {
+  opacity: 0.8;
 }

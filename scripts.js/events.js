@@ -10,12 +10,13 @@ import {
   themeSwitch,
   hideSidebarbtn,
   sidebar,
+  deleteTaskBtn,
 } from './dom.js';
 
 import { openModal, closeModal } from './modal.js';
 import { loadTheme, toggleTheme } from './theme.js';
 import { toggleSidebar } from './sidebar.js';
-import { loadTasks, saveTasks } from './storage.js';
+import { loadTasks, saveTask, updateTask, deleteTask } from './storage.js';
 import { renderAllTasks } from './render.js';
 
 export function setupEventListeners() {
@@ -24,7 +25,7 @@ export function setupEventListeners() {
   if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
   if (hideSidebarbtn) hideSidebarbtn.addEventListener('click', () => toggleSidebar(sidebar));
 
-  taskForm.addEventListener('submit', (e) => {
+  taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const title = taskTitleInput.value.trim();
@@ -38,17 +39,19 @@ export function setupEventListeners() {
     }
 
     
-        const tasks = loadTasks();
+        let tasks = loadTasks();
+        if (!Array.isArray(tasks)) tasks = []; // Ensure tasks is always an array
 
         // Check if editing
         if (taskForm.dataset.editing) {
             const id = Number(taskForm.dataset.editing);
-            const index = tasks.findIndex(t => t.id === id);
-            if (index !== -1) {
-                tasks[index].title = title;
-                tasks[index].description = description;
-                tasks[index].status = status;
-                tasks[index].priority = priority;
+            const taskToUpdate = tasks.find(t => t.id === id);
+    if (taskToUpdate) {
+      taskToUpdate.title = title;
+      taskToUpdate.description = description;
+      taskToUpdate.status = status;
+      taskToUpdate.priority = priority;
+      await updateTask(taskToUpdate);
             }
             delete taskForm.dataset.editing;
         } else {
@@ -59,10 +62,10 @@ export function setupEventListeners() {
                 status,
                 priority,
             };
-            tasks.push(newTask);
+            await saveTask(newTask);
         }
 
-        saveTasks(tasks);
+        tasks = await loadTasks()
         renderAllTasks(tasks);
         closeModal();
         loadTheme();
