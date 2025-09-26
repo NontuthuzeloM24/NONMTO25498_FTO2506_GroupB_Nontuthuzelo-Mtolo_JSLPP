@@ -1,7 +1,8 @@
+import { themeSwitch } from './dom.js';
+
 export function toggleTheme() {
     document.body.classList.toggle('dark-theme');
-    const mode = document.body.classList.contains('dark-theme') ? 'dark' : 'light';
-    localStorage.setItem('theme', mode);
+    localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light')
 }
 
 export function loadTheme() {
