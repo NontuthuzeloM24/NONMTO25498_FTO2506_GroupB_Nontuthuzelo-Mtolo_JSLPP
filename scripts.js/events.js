@@ -18,6 +18,9 @@ import { toggleSidebar } from './sidebar.js';
 import { saveTask, updateTask, deleteTask, getCurrentTasks } from './storage.js';
 import { renderAllTasks, updateColumnCounts } from './render.js';
 
+/**
+ * Sets up all UI event listeners for the Kanban app.
+ */
 export function setupEventListeners() {
   if (addTaskBtn) addTaskBtn.addEventListener('click', openModal);
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
@@ -39,7 +42,7 @@ export function setupEventListeners() {
     }
 
     if (taskForm.dataset.editing) {
-      // Editing existing task
+      // Edit existing task
       const id = Number(taskForm.dataset.editing);
       const tasks = getCurrentTasks();
       const taskToUpdate = tasks.find((t) => Number(t.id) === id);
@@ -52,24 +55,27 @@ export function setupEventListeners() {
       }
       delete taskForm.dataset.editing;
     } else {
-      // Creating new task
+      // Create new task
       const newTask = { title, description, status, priority };
       await saveTask(newTask);
     }
 
-    // Always render from localStorage to ensure persistence
     const tasks = getCurrentTasks();
     renderAllTasks(tasks);
     updateColumnCounts(tasks);
-
     closeModal();
     loadTheme();
   });
 
-  // Delete task
+  // Delete task button with confirmation
   if (deleteTaskBtn) {
     deleteTaskBtn.addEventListener('click', async () => {
       if (!taskForm.dataset.editing) return;
+
+      const confirmed = window.confirm(
+        '⚠️ Are you sure you want to delete this task? This action cannot be undone.'
+      );
+      if (!confirmed) return;
 
       const id = Number(taskForm.dataset.editing);
       await deleteTask(id);
@@ -77,13 +83,14 @@ export function setupEventListeners() {
       const tasks = getCurrentTasks();
       renderAllTasks(tasks);
       updateColumnCounts(tasks);
-
       closeModal();
       loadTheme();
     });
   }
 
-  // Mobile sidebar
+  // ================================
+  // Mobile Sidebar Toggle Handlers
+  // ================================
   const hamburgerBtn = document.getElementById('menu-toggle');
   const mobileSidebar = document.getElementById('side-bar-div');
   const overlay = document.getElementById('sidebar-overlay');
