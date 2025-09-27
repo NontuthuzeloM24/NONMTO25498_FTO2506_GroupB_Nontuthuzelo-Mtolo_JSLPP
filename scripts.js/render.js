@@ -1,26 +1,82 @@
 /**
  * @file render.js
- * @description Handles rendering of tasks and updating UI elements like counts.
+ * @description Handles rendering of tasks and updating UI elements including visual priority badges.
  */
 
-import { taskTitleInput, taskDescInput, taskStatusSelect, taskForm, deleteTaskBtn, taskPrioritySelect } from './dom.js';
+import {
+  taskTitleInput,
+  taskDescInput,
+  taskStatusSelect,
+  taskForm,
+  deleteTaskBtn,
+  taskPrioritySelect,
+} from './dom.js';
 import { openModal } from './modal.js';
+
+/**
+ * Creates a visual badge element for task priority.
+ * Instead of words, we use colored circle emojis.
+ * @param {string} priority - The priority level ('low', 'medium', 'high').
+ * @returns {HTMLElement} The styled badge span element.
+ */
+function createPriorityBadge(priority) {
+  const badge = document.createElement('span');
+  badge.classList.add('priority-badge');
+
+  // Normalize priority
+  const pr = (priority || 'low').toLowerCase();
+  badge.classList.add(pr);
+
+  // Use emoji instead of text
+  switch (pr) {
+    case 'high':
+      badge.textContent = '🔴'; // red circle
+      break;
+    case 'medium':
+      badge.textContent = '🟠'; // orange circle
+      break;
+    default:
+      badge.textContent = '🟢'; // green circle (low)
+      break;
+  }
+
+  return badge;
+}
 
 /**
  * Renders a single task card inside the appropriate column container.
  * @param {Object} task - The task object to render.
  */
 export function renderTask(task) {
+  console.log('Rendering task:', task.title, 'priority:', task.priority);
+
   const taskCard = document.createElement('div');
   taskCard.classList.add('task-div');
   taskCard.dataset.id = task.id;
-  taskCard.textContent = task.title;
-  taskCard.tabIndex = 0; // Make focusable for accessibility
+  taskCard.tabIndex = 0; // keyboard focusable
 
-  const container = document.querySelector(`.column-div[data-status="${task.status}"] .tasks-container`);
+  const contentWrapper = document.createElement('div');
+  contentWrapper.classList.add('task-content-wrapper');
+
+  // Add priority badge
+  const badge = createPriorityBadge(task.priority);
+  contentWrapper.appendChild(badge);
+
+  // Add title
+  const titleSpan = document.createElement('span');
+  titleSpan.classList.add('task-title-span');
+  titleSpan.textContent = task.title;
+  contentWrapper.appendChild(titleSpan);
+
+  taskCard.appendChild(contentWrapper);
+
+  // Append card to correct column
+  const container = document.querySelector(
+    `.column-div[data-status="${task.status}"] .tasks-container`
+  );
   if (container) container.appendChild(taskCard);
 
-  // Click to edit
+  // Click/edit logic
   const openEditModal = () => {
     taskTitleInput.value = task.title;
     taskDescInput.value = task.description;
@@ -41,18 +97,19 @@ export function renderTask(task) {
 }
 
 /**
- * Clears all tasks containers and renders all tasks.
+ * Clears all task containers and re-renders all tasks.
  * @param {Object[]} tasks - Array of task objects to render.
  */
 export function renderAllTasks(tasks) {
   document.querySelectorAll('.tasks-container').forEach((container) => {
     container.innerHTML = '';
   });
+
   tasks.forEach(renderTask);
 }
 
 /**
- * Updates the header counts for each task status column.
+ * Updates the column header counts
  * @param {Object[]} tasks - Array of task objects.
  */
 export function updateColumnCounts(tasks) {
@@ -62,3 +119,4 @@ export function updateColumnCounts(tasks) {
     if (header) header.textContent = `${status.toUpperCase()} (${count})`;
   });
 }
+
