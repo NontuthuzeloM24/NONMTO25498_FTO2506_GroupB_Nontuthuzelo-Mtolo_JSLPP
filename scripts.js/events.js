@@ -6,9 +6,8 @@ import {
   taskDescInput,
   taskStatusSelect,
   taskPrioritySelect,
-  newTaskPrioritySelect,
   themeSwitch,
-  hideSidebarbtn,
+  hideSidebarBtn,
   sidebar,
   deleteTaskBtn,
 } from './dom.js';
@@ -16,15 +15,31 @@ import {
 import { openModal, closeModal } from './modal.js';
 import { loadTheme, toggleTheme } from './theme.js';
 import { toggleSidebar } from './sidebar.js';
-import { loadTasks, saveTask, updateTask, deleteTask } from './storage.js';
+import { saveTask, updateTask, deleteTask, getCurrentTasks } from './storage.js';
 import { renderAllTasks } from './render.js';
 
+/**
+ * Sets up all UI event listeners for the Kanban app.
+ * Handles task form submission, modal open/close,
+ * theme toggling, sidebar toggling, and task deletion.
+ */
 export function setupEventListeners() {
+  // Open task modal
   if (addTaskBtn) addTaskBtn.addEventListener('click', openModal);
-  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-  if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
-  if (hideSidebarbtn) hideSidebarbtn.addEventListener('click', () => toggleSidebar(sidebar));
 
+  // Close task modal
+  if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+
+  // Toggle theme
+  if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
+
+  // Toggle sidebar visibility
+  if (hideSidebarBtn) hideSidebarBtn.addEventListener('click', () => toggleSidebar(sidebar));
+
+  /**
+   * Handle task form submission for creating or editing tasks.
+   * @param {Event} e - Submit event
+   */
   taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -34,56 +49,50 @@ export function setupEventListeners() {
     const priority = taskPrioritySelect.value;
 
     if (!title || !status) {
-      alert('! Please fill out this field.');
+      alert('⚠️ Title and Status are required fields.');
       return;
     }
 
-    
-        let tasks = loadTasks();
-        if (!Array.isArray(tasks)) tasks = []; // Ensure tasks is always an array
-
-        // Check if editing
-        if (taskForm.dataset.editing) {
-            const id = Number(taskForm.dataset.editing);
-            const taskToUpdate = tasks.find(t => t.id === id);
-    if (taskToUpdate) {
-      taskToUpdate.title = title;
-      taskToUpdate.description = description;
-      taskToUpdate.status = status;
-      taskToUpdate.priority = priority;
-      await updateTask(taskToUpdate);
-            }
-            delete taskForm.dataset.editing;
-        } else {
-            const newTask = {
-                id: Date.now(),
-                title,
-                description,
-                status,
-                priority,
-            };
-            await saveTask(newTask);
-        }
-
-        tasks = await loadTasks()
-        renderAllTasks(tasks);
-        closeModal();
-        loadTheme();
-    });
-
-    // Add delete event listener outside the submit handler
-    if (typeof deleteTaskBtn !== 'undefined' && deleteTaskBtn) {
-        deleteTaskBtn.addEventListener('click', () => {
-            if (!taskForm.dataset.editing) return;
-
-            const id = Number(taskForm.dataset.editing);
-            let tasks = loadTasks();
-            tasks = tasks.filter((t) => t.id !== id);
-
-            saveTasks(tasks);
-            renderAllTasks(tasks);
-            closeModal();
-            loadTheme();
-        });
+    // Edit existing task
+    if (taskForm.dataset.editing) {
+      const id = Number(taskForm.dataset.editing);
+      const tasks = getCurrentTasks();
+      const taskToUpdate = tasks.find((t) => Number(t.id) === id);
+      if (taskToUpdate) {
+        taskToUpdate.title = title;
+        taskToUpdate.description = description;
+        taskToUpdate.status = status;
+        taskToUpdate.priority = priority;
+        await updateTask(taskToUpdate);
+      }
+      delete taskForm.dataset.editing;
+    } 
+    // Create new task
+    else {
+      const newTask = { title, description, status, priority };
+      await saveTask(newTask);
     }
+
+    renderAllTasks(getCurrentTasks());
+    closeModal();
+    loadTheme();
+  });
+
+  // Delete task button handler
+  if (deleteTaskBtn) {
+    /**
+     * Deletes the currently editing task.
+     * @async
+     */
+    deleteTaskBtn.addEventListener('click', async () => {
+      if (!taskForm.dataset.editing) return;
+
+      const id = Number(taskForm.dataset.editing);
+      await deleteTask(id);
+
+      renderAllTasks(getCurrentTasks());
+      closeModal();
+      loadTheme();
+    });
+  }
 }
