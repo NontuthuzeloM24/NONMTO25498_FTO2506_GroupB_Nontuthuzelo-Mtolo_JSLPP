@@ -726,24 +726,38 @@ body.dark-theme .dot {
 
 /* RESPONSIVE BEHAVIOR */
 @media (max-width: 768px) {
+  .hamburger-btn {
+    display: block; /* show hamburger */
+  }
+
   .side-bar {
-    position: absolute;
-    top: 64px; /* below the header */
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: auto;
-    display: none;
+    position: fixed; /* overlay on top */
+    top: 0;
+    left: -100%; /* hide off-screen by default */
+    width: 80%; /* or var(--sidebar-width) */
+    height: 100vh;
     background-color: var(--primary-color);
-    z-index: 1000;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-    padding: 20px;
     flex-direction: column;
     gap: 16px;
+    padding: 20px;
+    z-index: 1001; /* above overlay */
+    transition: left 0.3s ease;
+    display: flex;
   }
 
   .side-bar.show-sidebar {
-    display: flex !important;
+    left: 0; /* slide in */
+  }
+
+  #sidebar-overlay {
+    display: none; /* hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.4);
+    z-index: 1000;
   }
 
   #sidebar-overlay.active {
@@ -751,19 +765,14 @@ body.dark-theme .dot {
   }
 
   .close-sidebar-btn {
-    display: none; /* No X button needed if it's just a dropdown */
+    display: block;
+    align-self: flex-end;
+    font-size: 1.5rem;
+    color: var(--secondary-font-color);
+    background: none;
+    border: none;
+    cursor: pointer;
   }
-}
-
-#sidebar-overlay {
-  position: fixed;
-  top: 64px; /* align with header */
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: none;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 999;
 }
 
 
