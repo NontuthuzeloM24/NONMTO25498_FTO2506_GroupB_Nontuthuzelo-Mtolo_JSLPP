@@ -1,6 +1,6 @@
 /**
  * @file render.js
- * @description Handles rendering of tasks and updating UI elements including visual priority badges.
+ * @description Handles rendering of tasks, sorting by priority, and updating UI elements including emoji priority badges.
  */
 
 import {
@@ -15,7 +15,7 @@ import { openModal } from './modal.js';
 
 /**
  * Creates a visual badge element for task priority.
- * Instead of words, we use colored circle emojis.
+ * Displays a colored circle emoji (🔴, 🟠, 🟢) instead of text.
  * @param {string} priority - The priority level ('low', 'medium', 'high').
  * @returns {HTMLElement} The styled badge span element.
  */
@@ -97,19 +97,32 @@ export function renderTask(task) {
 }
 
 /**
- * Clears all task containers and re-renders all tasks.
+ * Clears all task containers and re-renders all tasks, sorted by priority.
+ * High → Medium → Low.
  * @param {Object[]} tasks - Array of task objects to render.
  */
 export function renderAllTasks(tasks) {
+  const priorityOrder = { high: 1, medium: 2, low: 3 };
+
+  // Sort by priority
+  const sortedTasks = [...tasks].sort((a, b) => {
+    const aPriority = priorityOrder[(a.priority || 'low').toLowerCase()] || 3;
+    const bPriority = priorityOrder[(b.priority || 'low').toLowerCase()] || 3;
+
+    return aPriority - bPriority;
+  });
+
+  // Clear containers
   document.querySelectorAll('.tasks-container').forEach((container) => {
     container.innerHTML = '';
   });
 
-  tasks.forEach(renderTask);
+  // Render sorted tasks
+  sortedTasks.forEach(renderTask);
 }
 
 /**
- * Updates the column header counts
+ * Updates the column header counts.
  * @param {Object[]} tasks - Array of task objects.
  */
 export function updateColumnCounts(tasks) {
@@ -119,4 +132,5 @@ export function updateColumnCounts(tasks) {
     if (header) header.textContent = `${status.toUpperCase()} (${count})`;
   });
 }
+
 
