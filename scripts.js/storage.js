@@ -37,22 +37,34 @@ function loadFromLocal() {
 }
 
 /**
- * Fetch tasks from API, fallback to localStorage if API fails.
+ * Fetch tasks from API, merge with local tasks if needed,
+ * fallback to localStorage if API fails.
  * @async
  * @returns {Promise<Array<Object>>} - Array of task objects
  */
 async function loadTasks() {
+  const local = loadFromLocal(); // locally added tasks
+
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error('Failed to fetch tasks');
-    const data = await response.json();
-    if (Array.isArray(data)) {
-      saveToLocal(data);
-      return data;
+    const apiTasks = await response.json();
+    if (Array.isArray(apiTasks)) {
+      // Merge local tasks not present in API
+      const mergedTasks = [...apiTasks];
+      local.forEach((t) => {
+        if (!mergedTasks.find((apiT) => Number(apiT.id) === Number(t.id))) {
+          mergedTasks.push(t);
+        }
+      });
+
+      saveToLocal(mergedTasks); // save merged tasks
+      return mergedTasks;
     }
     throw new Error('API did not return array');
   } catch (error) {
-    return loadFromLocal();
+    // fallback to local only
+    return local;
   }
 }
 
@@ -60,15 +72,13 @@ async function loadTasks() {
  * Save a new task to API and localStorage.
  * @async
  * @param {Object} task - Task object to save
- * @param {string} task.title - Task title
- * @param {string} [task.board] - Optional board name
  * @returns {Promise<Object>} - Saved task object
  */
 async function saveTask(task) {
   const taskToSave = {
     ...task,
-    id: Date.now(),
-    board: task.board || "Launch Career"
+    id: Date.now(), // unique id
+    board: task.board || 'Launch Career',
   };
 
   let savedTask = null;
@@ -80,14 +90,13 @@ async function saveTask(task) {
     });
     if (!response.ok) throw new Error('Failed to save task');
     savedTask = await response.json();
-  } catch (error) {
-    savedTask = taskToSave;
+  } catch {
+    savedTask = taskToSave; // fallback to local only
   }
 
   const tasks = loadFromLocal();
   tasks.push(savedTask);
   saveToLocal(tasks);
-
   return savedTask;
 }
 
@@ -95,7 +104,6 @@ async function saveTask(task) {
  * Update an existing task in API and localStorage.
  * @async
  * @param {Object} task - Task object to update
- * @param {number|string} task.id - Task ID
  * @returns {Promise<Object>} - Updated task object
  */
 async function updateTask(task) {
@@ -108,16 +116,17 @@ async function updateTask(task) {
     });
     if (!response.ok) throw new Error('Failed to update task');
     updatedTask = await response.json();
-  } catch (error) {
-    updatedTask = task;
+  } catch {
+    updatedTask = task; // fallback to local only
   }
 
-  let tasks = loadFromLocal();
-  const idx = tasks.findIndex(t => Number(t.id) === Number(task.id));
+  const tasks = loadFromLocal();
+  const idx = tasks.findIndex((t) => Number(t.id) === Number(task.id));
   if (idx !== -1) {
     tasks[idx] = updatedTask;
     saveToLocal(tasks);
   }
+
   return updatedTask;
 }
 
@@ -129,17 +138,14 @@ async function updateTask(task) {
  */
 async function deleteTask(id) {
   try {
-    const response = await fetch(`${API_URL}/${Number(id)}`, {
-      method: 'DELETE',
-    });
+    const response = await fetch(`${API_URL}/${Number(id)}`, { method: 'DELETE' });
     if (!response.ok) throw new Error('Failed to delete task');
-  } catch (error) {
-    // Ignore, fallback to local
+  } catch {
+    // ignore API failure, fallback to local only
   }
 
-  let tasks = loadFromLocal();
-  const newTasks = tasks.filter(t => Number(t.id) !== Number(id));
-  saveToLocal(newTasks);
+  const tasks = loadFromLocal().filter((t) => Number(t.id) !== Number(id));
+  saveToLocal(tasks);
   return true;
 }
 
@@ -152,3 +158,4 @@ function getCurrentTasks() {
 }
 
 export { loadTasks, saveTask, updateTask, deleteTask, getCurrentTasks };
+

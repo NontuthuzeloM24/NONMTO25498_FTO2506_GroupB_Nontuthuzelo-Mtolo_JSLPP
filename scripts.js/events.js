@@ -16,31 +16,15 @@ import { openModal, closeModal } from './modal.js';
 import { loadTheme, toggleTheme } from './theme.js';
 import { toggleSidebar } from './sidebar.js';
 import { saveTask, updateTask, deleteTask, getCurrentTasks } from './storage.js';
-import { renderAllTasks } from './render.js';
+import { renderAllTasks, updateColumnCounts } from './render.js';
 
-/**
- * Sets up all UI event listeners for the Kanban app.
- * Handles task form submission, modal open/close,
- * theme toggling, sidebar toggling, mobile sidebar handling,
- * and task deletion.
- */
 export function setupEventListeners() {
-  // Open task modal
   if (addTaskBtn) addTaskBtn.addEventListener('click', openModal);
-
-  // Close task modal
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-
-  // Toggle theme
   if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
-
-  // Toggle sidebar visibility (desktop only)
   if (hideSidebarBtn) hideSidebarBtn.addEventListener('click', () => toggleSidebar(sidebar));
 
-  /**
-   * Handle task form submission for creating or editing tasks.
-   * @param {Event} e - Submit event
-   */
+  // Task form submission (create or edit)
   taskForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -54,8 +38,8 @@ export function setupEventListeners() {
       return;
     }
 
-    // Edit existing task
     if (taskForm.dataset.editing) {
+      // Editing existing task
       const id = Number(taskForm.dataset.editing);
       const tasks = getCurrentTasks();
       const taskToUpdate = tasks.find((t) => Number(t.id) === id);
@@ -67,73 +51,60 @@ export function setupEventListeners() {
         await updateTask(taskToUpdate);
       }
       delete taskForm.dataset.editing;
-    } 
-    // Create new task
-    else {
+    } else {
+      // Creating new task
       const newTask = { title, description, status, priority };
       await saveTask(newTask);
     }
 
-    renderAllTasks(getCurrentTasks());
+    // Always render from localStorage to ensure persistence
+    const tasks = getCurrentTasks();
+    renderAllTasks(tasks);
+    updateColumnCounts(tasks);
+
     closeModal();
     loadTheme();
   });
 
-  // Delete task button handler
+  // Delete task
   if (deleteTaskBtn) {
-    /**
-     * Deletes the currently editing task.
-     * @async
-     */
     deleteTaskBtn.addEventListener('click', async () => {
       if (!taskForm.dataset.editing) return;
 
       const id = Number(taskForm.dataset.editing);
       await deleteTask(id);
 
-      renderAllTasks(getCurrentTasks());
+      const tasks = getCurrentTasks();
+      renderAllTasks(tasks);
+      updateColumnCounts(tasks);
+
       closeModal();
       loadTheme();
     });
   }
 
-  // ================================
-  // Mobile Sidebar Toggle Handlers
-  // ================================
-
-  /**
-   * Toggles the mobile sidebar open and close.
-   * Applies to screens <768px width.
-   */
+  // Mobile sidebar
   const hamburgerBtn = document.getElementById('menu-toggle');
   const mobileSidebar = document.getElementById('side-bar-div');
   const overlay = document.getElementById('sidebar-overlay');
   const closeSidebarBtn = document.getElementById('close-sidebar');
 
   if (hamburgerBtn && mobileSidebar && overlay && closeSidebarBtn) {
-    /**
-     * Opens the sidebar and activates the background overlay.
-     */
     hamburgerBtn.addEventListener('click', () => {
       mobileSidebar.classList.add('show-sidebar');
       overlay.classList.add('active');
     });
 
-    /**
-     * Closes the sidebar and hides the overlay when close button is clicked.
-     */
     closeSidebarBtn.addEventListener('click', () => {
       mobileSidebar.classList.remove('show-sidebar');
       overlay.classList.remove('active');
     });
 
-    /**
-     * Closes the sidebar and overlay when user taps outside the sidebar.
-     */
     overlay.addEventListener('click', () => {
       mobileSidebar.classList.remove('show-sidebar');
       overlay.classList.remove('active');
     });
   }
 }
+
 
