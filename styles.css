@@ -720,18 +720,46 @@ body.dark-theme .dot {
 
 /* RESPONSIVE BEHAVIOR */
 @media (max-width: 768px) {
-  .hamburger-btn {
+  .side-bar {
+    position: absolute;
+    top: 64px; /* below the header */
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: auto;
+    display: none;
+    background-color: var(--primary-color);
+    z-index: 1000;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .side-bar.show-sidebar {
+    display: flex !important;
+  }
+
+  #sidebar-overlay.active {
     display: block;
   }
 
-  .side-bar {
-    display: none !important; /* hide static sidebar on mobile */
-  }
-
-  #mobile-sidebar {
-    display: flex !important;
+  .close-sidebar-btn {
+    display: none; /* No X button needed if it's just a dropdown */
   }
 }
+
+#sidebar-overlay {
+  position: fixed;
+  top: 64px; /* align with header */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 999;
+}
+
 
 
 
