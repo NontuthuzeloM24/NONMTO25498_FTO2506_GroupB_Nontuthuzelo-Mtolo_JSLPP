@@ -21,7 +21,8 @@ import { renderAllTasks } from './render.js';
 /**
  * Sets up all UI event listeners for the Kanban app.
  * Handles task form submission, modal open/close,
- * theme toggling, sidebar toggling, and task deletion.
+ * theme toggling, sidebar toggling, mobile sidebar handling,
+ * and task deletion.
  */
 export function setupEventListeners() {
   // Open task modal
@@ -33,7 +34,7 @@ export function setupEventListeners() {
   // Toggle theme
   if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
 
-  // Toggle sidebar visibility
+  // Toggle sidebar visibility (desktop only)
   if (hideSidebarBtn) hideSidebarBtn.addEventListener('click', () => toggleSidebar(sidebar));
 
   /**
@@ -95,4 +96,44 @@ export function setupEventListeners() {
       loadTheme();
     });
   }
+
+  // ================================
+  // Mobile Sidebar Toggle Handlers
+  // ================================
+
+  /**
+   * Toggles the mobile sidebar open and close.
+   * Applies to screens <768px width.
+   */
+  const hamburgerBtn = document.getElementById('menu-toggle');
+  const mobileSidebar = document.getElementById('side-bar-div');
+  const overlay = document.getElementById('sidebar-overlay');
+  const closeSidebarBtn = document.getElementById('close-sidebar');
+
+  if (hamburgerBtn && mobileSidebar && overlay && closeSidebarBtn) {
+    /**
+     * Opens the sidebar and activates the background overlay.
+     */
+    hamburgerBtn.addEventListener('click', () => {
+      mobileSidebar.classList.add('show-sidebar');
+      overlay.classList.add('active');
+    });
+
+    /**
+     * Closes the sidebar and hides the overlay when close button is clicked.
+     */
+    closeSidebarBtn.addEventListener('click', () => {
+      mobileSidebar.classList.remove('show-sidebar');
+      overlay.classList.remove('active');
+    });
+
+    /**
+     * Closes the sidebar and overlay when user taps outside the sidebar.
+     */
+    overlay.addEventListener('click', () => {
+      mobileSidebar.classList.remove('show-sidebar');
+      overlay.classList.remove('active');
+    });
+  }
 }
+

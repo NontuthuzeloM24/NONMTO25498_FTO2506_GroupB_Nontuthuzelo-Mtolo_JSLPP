@@ -27,3 +27,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Setup UI event listeners
     setupEventListeners();
 });
+

@@ -32,3 +32,4 @@ export function loadTheme() {
     if (themeSwitch) themeSwitch.checked = false;
   }
 }
+

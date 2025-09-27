@@ -58,3 +58,4 @@ export function toggleSidebar() {
     if (existingBtn) existingBtn.remove();
   }
 }
+
