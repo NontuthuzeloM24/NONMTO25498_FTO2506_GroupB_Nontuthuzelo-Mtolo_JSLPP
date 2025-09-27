@@ -19,8 +19,13 @@
   </head>
 
   <body>
+    <!-- Hamburger Menu Button -->
+    <button id="menu-toggle" class="hamburger-btn" aria-label="Open Menu">
+      ☰
+    </button>
     <!-- Navigation Sidebar: Contains the logo, navigation links for boards, and theme toggle. -->
     <nav class="side-bar" id="side-bar-div">
+      <button id="close-sidebar" class="close-sidebar-btn" aria-label="Close Menu">✕</button>
       <div id="side-logo-div">
         <img id="logo" src="./assets/logo-light.svg" alt="logo-light" />
       </div>
@@ -99,7 +104,9 @@
       <form method="dialog" id="task-form">
         <div class="modal-header">
           <h3>Task</h3>
-          <button type="button" class="close-btn" id="close-modal-btn">&times;</button>
+          <button type="button" class="close-btn" id="close-modal-btn">
+            &times;
+          </button>
         </div>
 
         <label for="task-title">Title</label>
@@ -123,8 +130,12 @@
         </select>
 
         <div class="button-group">
-          <button type="submit" id="submit-btn" class="submit-btn">Save Changes</button>
-          <button type="button" id="delete-task-btn" class="delete-btn">Delete Task</button>
+          <button type="submit" id="submit-btn" class="submit-btn">
+            Save Changes
+          </button>
+          <button type="button" id="delete-task-btn" class="delete-btn">
+            Delete Task
+          </button>
         </div>
       </form>
     </dialog>
@@ -168,7 +179,9 @@
         </div>
 
         <div class="input-div">
-          <label class="label-modal-window" for="select-priority">Priority</label>
+          <label class="label-modal-window" for="select-priority"
+            >Priority</label
+          >
           <select name="priority" id="select-priority" required>
             <option value="low">low</option>
             <option value="medium">medium</option>
@@ -186,5 +199,7 @@
         </div>
       </form>
     </dialog>
+    <!-- Overlay that appears when sidebar is open -->
+    <div id="sidebar-overlay"></div>
   </body>
 </html>
