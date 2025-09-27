@@ -19,10 +19,37 @@ import { saveTask, updateTask, deleteTask, getCurrentTasks } from './storage.js'
 import { renderAllTasks, updateColumnCounts } from './render.js';
 
 /**
+ * Helper to toggle modal buttons based on context (add/edit).
+ * @param {boolean} isEditing - True if editing an existing task
+ */
+function setModalButtons(isEditing) {
+  const saveBtn = document.getElementById('save-task-btn');
+  const deleteBtn = document.getElementById('delete-task-btn');
+
+  if (isEditing) {
+    if (saveBtn) saveBtn.style.display = 'inline-block';
+    if (deleteBtn) deleteBtn.style.display = 'inline-block';
+  } else {
+    if (saveBtn) saveBtn.style.display = 'none';
+    if (deleteBtn) deleteBtn.style.display = 'none';
+  }
+}
+
+/**
  * Sets up all UI event listeners for the Kanban app.
  */
 export function setupEventListeners() {
-  if (addTaskBtn) addTaskBtn.addEventListener('click', openModal);
+  // Open modal for creating new task
+  if (addTaskBtn) {
+    addTaskBtn.addEventListener('click', () => {
+      taskForm.reset();
+      delete taskForm.dataset.editing; // clear editing state
+      setModalButtons(false);          // hide save/delete buttons
+      openModal();
+    });
+  }
+
+  // Close modal
   if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
   if (themeSwitch) themeSwitch.addEventListener('change', toggleTheme);
   if (hideSidebarBtn) hideSidebarBtn.addEventListener('click', () => toggleSidebar(sidebar));
@@ -113,5 +140,6 @@ export function setupEventListeners() {
     });
   }
 }
+
 
 
